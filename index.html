@@ -1,0 +1,702 @@
+<title>GREET to BW</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  /* cobalt+copper swapped for a straight family of blues, per feedback — brass = deep primary blue,
+     teal = a lighter, cooler blue for secondary accents/tags so the two still read apart. Paper background
+     moved from a flat grey to a soft periwinkle-tinted white so it reads as chosen, not default. */
+  :root{
+    --paper:#F2F5FC;
+    --paper-dim:#E4EAF6;
+    --ink:#12161C;
+    --ink-soft:#535E6B;
+    --rule:#CCD7EC;
+    --brass:#0B4FDB;
+    --brass-deep:#0A3FAF;
+    --teal:#2E86D6;
+    --card:#FCFDFF;
+    --focus:#0A3FAF;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#0A0E14;
+      --paper-dim:#0F1520;
+      --ink:#EDF0F3;
+      --ink-soft:#9AA5B1;
+      --rule:#232B36;
+      --brass:#5B8CFF;
+      --brass-deep:#84A9FF;
+      --teal:#6FBEFF;
+      --card:#111826;
+      --focus:#84A9FF;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#0A0E14;
+    --paper-dim:#0F1520;
+    --ink:#EDF0F3;
+    --ink-soft:#9AA5B1;
+    --rule:#232B36;
+    --brass:#5B8CFF;
+    --brass-deep:#84A9FF;
+    --teal:#6FBEFF;
+    --card:#111826;
+    --focus:#84A9FF;
+  }
+
+  *{box-sizing:border-box;}
+  /* was 112.5% (an earlier "increase text size" pass) — dialed back down, still a touch above the
+     16px default */
+  html{scroll-behavior:smooth; font-size:104%;}
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto;} }
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+    font-size:1rem;
+    line-height:1.6;
+  }
+  img{max-width:100%;}
+  a{color:inherit;}
+  ::selection{background:var(--brass); color:var(--paper);}
+  :focus-visible{outline:2px solid var(--focus); outline-offset:3px;}
+
+  h1,h2,h3{
+    font-family:"Fraunces", Georgia, serif;
+    font-weight:600;
+    text-wrap:balance;
+    margin:0;
+    letter-spacing:-0.01em;
+  }
+  .eyebrow{
+    font-family:"IBM Plex Mono", ui-monospace, monospace;
+    font-size:0.78rem;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--brass-deep);
+    display:inline-flex;
+    align-items:center;
+    gap:0.5em;
+  }
+  .eyebrow::before{
+    content:"";
+    width:0.9em;
+    height:1px;
+    background:var(--brass-deep);
+    display:inline-block;
+  }
+  .mono{font-family:"IBM Plex Mono", ui-monospace, monospace;}
+
+  /* widened from a boxed 1120px container to a near-full-bleed one, per feedback (closer to litecab) */
+  .wrap{max-width:1600px; margin:0 auto; padding:0 5vw;}
+  section{padding:96px 0;}
+  section + section{border-top:1px solid var(--rule);}
+  @media (max-width:640px){ section{padding:64px 0;} .wrap{padding:0 20px;} }
+
+  /* ---------- nav ---------- */
+  /* header moved to a solid dark blue bar (was a translucent light strip) — kept the same fixed navy in
+     both themes since it's a deliberate brand bar, not page content, and given light text throughout */
+  header.site{
+    position:sticky; top:0; z-index:50;
+    background:#0A2258;
+    border-bottom:1px solid #14336F;
+  }
+  .nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 5vw; max-width:1600px; margin:0 auto;
+    box-sizing:border-box; width:100%;
+  }
+  .brand{
+    display:flex; align-items:baseline; gap:0.4em;
+    font-family:"Fraunces", serif; font-weight:600; font-size:1.15rem;
+    text-decoration:none; color:#FFFFFF;
+  }
+  .brand .arrow{color:#7CB4FF; font-family:"IBM Plex Mono", monospace; font-weight:400;}
+  nav.links{display:flex; gap:28px; align-items:center;}
+  nav.links a{
+    font-size:0.92rem; text-decoration:none; color:#B9CDEF;
+    transition:color 0.15s;
+  }
+  nav.links a:hover{color:#FFFFFF;}
+  .btn{
+    display:inline-flex; align-items:center; gap:0.5em;
+    font-family:"IBM Plex Sans", sans-serif; font-weight:500; font-size:0.92rem;
+    padding:10px 18px; border-radius:3px; text-decoration:none;
+    border:1px solid var(--ink);
+    transition:background 0.15s, color 0.15s, border-color 0.15s;
+    white-space:nowrap;
+  }
+  .btn-primary{background:var(--ink); color:var(--paper); border-color:var(--ink);}
+  .btn-primary:hover{background:var(--brass-deep); border-color:var(--brass-deep); color:#fff;}
+  .btn-ghost{background:transparent; color:var(--ink); border-color:var(--rule);}
+  .btn-ghost:hover{border-color:var(--ink);}
+  /* the nav's own "Request access" sits on the dark header, so it gets a bright fixed-contrast
+     treatment instead of the ink/paper pair (which went dark-on-dark and read as an unreadable
+     black box against the new navy header) */
+  .nav .btn-primary{
+    background:#3E86FF; color:#FFFFFF; border-color:#3E86FF;
+  }
+  .nav .btn-primary:hover{background:#6BA4FF; border-color:#6BA4FF; color:#FFFFFF;}
+  @media (max-width:800px){ nav.links a.hide-narrow{display:none;} }
+
+  /* ---------- hero ---------- */
+  /* previously "padding:72px 0 88px" — that shorthand silently zeroed the horizontal padding .wrap
+     set (same specificity, later rule wins the whole property), so the hero sat at a different left/right
+     inset than every other section. Now touches only the vertical sides. */
+  .hero{padding-top:72px; padding-bottom:88px; border-top:none;}
+  .hero-grid{
+    display:grid; grid-template-columns:1.05fr 0.95fr; gap:56px; align-items:center;
+  }
+  /* grid columns default to min-width:auto, so a long headline word refused to shrink and pushed
+     the whole row (and the page) wider than the viewport — this lets the columns actually shrink */
+  .hero-grid > *{min-width:0;}
+  @media (max-width:900px){ .hero-grid{grid-template-columns:1fr;} }
+  .hero h1{font-size:clamp(2rem, 3.6vw, 3rem); line-height:1.12;}
+  .hero h1 em{font-style:italic; color:var(--brass-deep);}
+  .hero p.lede{
+    margin-top:20px; font-size:1.05rem; color:var(--ink-soft); max-width:48ch;
+  }
+  .hero-ctas{display:flex; gap:14px; margin-top:32px; flex-wrap:wrap;}
+  .hero-canvas-wrap{
+    position:relative; border:1px solid var(--rule); border-radius:6px;
+    background:var(--card); overflow:hidden; aspect-ratio:4/3.1;
+  }
+  canvas#loomCanvas{display:block; width:100%; height:100%;}
+  .hero-canvas-caption{
+    position:absolute; left:14px; bottom:12px;
+    font-size:0.72rem; color:var(--ink-soft); background:color-mix(in srgb, var(--card) 75%, transparent);
+    padding:3px 8px; border-radius:3px;
+  }
+
+  /* ---------- problem ---------- */
+  .pain-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--rule); border:1px solid var(--rule); margin-top:44px;}
+  @media (max-width:760px){ .pain-grid{grid-template-columns:1fr;} }
+  .pain-card{background:var(--card); padding:30px 26px;}
+  .pain-card .num{font-family:"IBM Plex Mono", monospace; color:var(--brass-deep); font-size:0.85rem;}
+  .pain-card h3{font-size:1.15rem; margin-top:10px;}
+  .pain-card p{color:var(--ink-soft); margin-top:10px; font-size:1.05rem; max-width:48ch;}
+
+  /* ---------- pipeline ---------- */
+  .stage{
+    display:grid; grid-template-columns:88px 1fr; gap:28px;
+    padding:36px 0; border-top:1px solid var(--rule);
+  }
+  .stage:first-of-type{border-top:none;}
+  .stage .stage-no{
+    font-family:"Fraunces", serif; font-size:2.6rem; font-weight:600; color:var(--rule);
+    line-height:1;
+  }
+  .stage h3{font-size:1.3rem;}
+  .stage .tag-row{display:flex; gap:8px; flex-wrap:wrap; margin-top:14px;}
+  .tag{
+    font-family:"IBM Plex Mono", monospace; font-size:0.75rem; color:var(--teal);
+    border:1px solid var(--rule); border-radius:20px; padding:4px 12px;
+    background:var(--card);
+  }
+  .stage p{color:var(--ink-soft); margin-top:12px; max-width:64ch;}
+  @media (max-width:640px){ .stage{grid-template-columns:1fr; gap:8px;} }
+
+  /* ---------- output ---------- */
+  .output-grid{display:grid; grid-template-columns:1.1fr 0.9fr; gap:56px; margin-top:44px; align-items:start;}
+  @media (max-width:900px){ .output-grid{grid-template-columns:1fr;} }
+  .output-list{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:22px;}
+  .output-list li{display:grid; grid-template-columns:26px 1fr; gap:12px;}
+  .output-list .mark{color:var(--brass); font-family:"IBM Plex Mono", monospace;}
+  .output-list h4{margin:0 0 4px; font-size:1rem; font-weight:600; font-family:"IBM Plex Sans", sans-serif;}
+  .output-list p{margin:0; color:var(--ink-soft); font-size:1.05rem; max-width:48ch;}
+  .anchor-card{
+    background:var(--card); border:1px solid var(--rule); border-radius:6px; padding:24px;
+    font-family:"IBM Plex Mono", monospace; font-size:0.82rem; line-height:1.9;
+  }
+  .anchor-card .file{color:var(--ink-soft);}
+  .anchor-card .path{color:var(--teal);}
+  .anchor-card .k{color:var(--brass-deep);}
+
+  /* ---------- learn ---------- */
+  .learn-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:24px; margin-top:44px;}
+  @media (max-width:700px){ .learn-grid{grid-template-columns:1fr;} }
+  .learn-card{
+    border:1px solid var(--rule); border-radius:6px; padding:26px; background:var(--card);
+    text-decoration:none; color:var(--ink); display:block; transition:border-color 0.15s;
+  }
+  .learn-card:hover{border-color:var(--brass);}
+  .learn-card .eyebrow{margin-bottom:10px;}
+  .learn-card h3{font-size:1.15rem;}
+  .learn-card p{color:var(--ink-soft); font-size:1.05rem; margin-top:10px; max-width:48ch;}
+  .learn-card .go{margin-top:14px; font-size:0.85rem; color:var(--brass-deep); font-family:"IBM Plex Mono",monospace;}
+
+  /* ---------- faq ---------- */
+  /* was capped at 760px, so it sat narrower than every other section — now a 2-col grid spanning the
+     full section width, matching pain-grid/learn-grid */
+  .faq{margin-top:36px; display:grid; grid-template-columns:1fr 1fr; column-gap:56px;}
+  @media (max-width:800px){ .faq{grid-template-columns:1fr;} }
+  details{border-top:1px solid var(--rule); padding:20px 0;}
+  summary{
+    cursor:pointer; list-style:none; display:flex; justify-content:space-between; align-items:center;
+    font-weight:500; font-size:1.02rem; gap:16px;
+  }
+  summary::-webkit-details-marker{display:none;}
+  summary .plus{font-family:"IBM Plex Mono",monospace; color:var(--brass-deep); font-size:1.1rem; transition:transform 0.2s;}
+  details[open] summary .plus{transform:rotate(45deg);}
+  details p{color:var(--ink-soft); margin-top:14px; max-width:48ch; font-size:1.05rem;}
+
+  /* ---------- interest form ---------- */
+  .interest{background:var(--paper-dim);}
+  .interest-grid{display:grid; grid-template-columns:0.9fr 1.1fr; gap:56px;}
+  @media (max-width:900px){ .interest-grid{grid-template-columns:1fr;} }
+  .interest-intro p{color:var(--ink-soft); margin-top:16px; max-width:48ch; font-size:1.05rem;}
+  .interest-intro .note{
+    margin-top:28px; padding:16px 18px; border-left:2px solid var(--brass);
+    background:var(--card); font-size:0.88rem; color:var(--ink-soft);
+  }
+  form.request{
+    background:var(--card); border:1px solid var(--rule); border-radius:6px; padding:32px;
+    display:flex; flex-direction:column; gap:18px;
+  }
+  .field{display:flex; flex-direction:column; gap:6px;}
+  .field label{font-size:0.85rem; font-weight:500;}
+  .two-col{display:grid; grid-template-columns:1fr 1fr; gap:18px;}
+  @media (max-width:520px){ .two-col{grid-template-columns:1fr;} }
+  input[type=text], input[type=email], select, textarea{
+    font-family:"IBM Plex Sans", sans-serif; font-size:0.95rem;
+    padding:10px 12px; border:1px solid var(--rule); border-radius:4px;
+    background:var(--paper); color:var(--ink);
+  }
+  textarea{resize:vertical; min-height:88px;}
+  input:focus, select:focus, textarea:focus{border-color:var(--brass);}
+  .checkline{display:flex; align-items:flex-start; gap:10px; font-size:0.86rem; color:var(--ink-soft);}
+  .checkline input{margin-top:3px;}
+  form.request button{
+    margin-top:6px; align-self:flex-start;
+  }
+  .form-status{font-size:0.85rem; color:var(--teal); min-height:1.2em;}
+
+  /* ---------- footer ---------- */
+  footer{padding:48px 0 56px;}
+  .foot-grid{display:flex; justify-content:space-between; gap:24px; flex-wrap:wrap; align-items:flex-start;}
+  .foot-links{display:flex; gap:24px; flex-wrap:wrap;}
+  .foot-links a{font-size:0.88rem; text-decoration:none; color:var(--ink-soft);}
+  .foot-links a:hover{color:var(--ink);}
+  .foot-meta{font-size:0.82rem; color:var(--ink-soft); max-width:36ch;}
+  .foot-meta a{color:var(--brass-deep); text-decoration:none;}
+</style>
+
+<header class="site">
+  <div class="nav">
+    <a class="brand" href="#top">GREET <span class="arrow">&rarr;</span> BW</a>
+    <nav class="links">
+      <a class="hide-narrow" href="#faq">FAQ</a>
+      <a class="hide-narrow" href="#why">Why</a>
+      <!-- "How it works" nav link commented out with the section it pointed to -->
+      <a class="hide-narrow" href="#output">What you get</a>
+      <a class="hide-narrow" href="#learn">Learn</a>
+      <a href="#interest" class="btn btn-primary">Request access</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <section class="hero wrap">
+    <div class="hero-grid">
+      <div>
+        <span class="eyebrow">GREETtoBW &middot; open pipeline</span>
+        <h1 style="margin-top:18px;">Argonne's GREET model, <em>unlocked</em> as a Brightway-ready inventory.</h1>
+        <p class="lede">GREET's life-cycle data for fuels, vehicles, and materials lives in a two-thousand-tab
+          Excel workbook. GREETtoBW traces every formula back to its source and rebuilds it as linked
+          EcoSpold2 datasets, so it opens directly in Brightway, with each number still
+          traceable to the cell it came from.</p>
+        <div class="hero-ctas">
+          <a class="btn btn-primary" href="#interest">Request access</a>
+          <!-- "View the code on GitHub" commented out: repo isn't linked publicly yet, per request -->
+        </div>
+        <!-- earlier attempt moved "Request access" up next to the eyebrow — user clarified they meant right below the intro (eyebrow + h1 + lede), so it's back here -->
+      </div>
+      <div class="hero-canvas-wrap">
+        <canvas id="loomCanvas" aria-hidden="true"></canvas>
+        <span class="hero-canvas-caption">spreadsheet formulas &rarr; dependency graph</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- "For your lab or group" interest form moved here, right after the hero, per feedback -->
+  <section id="interest" class="interest">
+    <div class="wrap interest-grid">
+      <div class="interest-intro">
+        <span class="eyebrow">For your lab or group</span>
+        <h2 style="font-size:clamp(1.6rem,3vw,2.2rem); margin-top:16px;">Get the datasets, or shape what's built next.</h2>
+        <p>Coverage is being built out sheet by sheet. Tell us which chemistries, pathways, or GREET
+          sheets matter to your work and we'll follow up, whether that's early access to built
+          datasets, a walkthrough of the pipeline, or a conversation about what to trace next.</p>
+        <div class="note">Submitting opens a pre-filled email to <span class="mono">fzhao@purdue.edu</span>.
+          Nothing is sent automatically, and no data is stored on this page.</div>
+      </div>
+      <form class="request" id="requestForm">
+        <div class="two-col">
+          <div class="field">
+            <label for="fname">Name</label>
+            <input type="text" id="fname" name="name" required autocomplete="name">
+          </div>
+          <div class="field">
+            <label for="femail">Work email</label>
+            <input type="email" id="femail" name="email" required autocomplete="email">
+          </div>
+        </div>
+        <div class="field">
+          <label for="forg">Organization</label>
+          <input type="text" id="forg" name="org" required autocomplete="organization">
+        </div>
+        <div class="field">
+          <label for="finterest">What are you interested in?</label>
+          <select id="finterest" name="interest">
+            <option>Early access to built EcoSpold datasets</option>
+            <option>A specific chemistry or GREET sheet</option>
+            <option>A technical walkthrough of the pipeline</option>
+            <option>Collaborating on the codebase</option>
+            <option>Just exploring</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="fnotes">What should we know?</label>
+          <textarea id="fnotes" name="notes" placeholder="e.g. chemistries, pathways, or GREET sheets you need traced"></textarea>
+        </div>
+        <label class="checkline">
+          <input type="checkbox" required>
+          I agree to be contacted about GREETtoBW.
+        </label>
+        <button type="submit" class="btn btn-primary">Send request</button>
+        <div class="form-status" id="formStatus" role="status"></div>
+      </form>
+    </div>
+  </section>
+
+  <!-- FAQ moved here, right after the hero, per feedback -->
+  <section id="faq" class="wrap">
+    <span class="eyebrow">Common questions</span>
+    <!-- "Before you ask" replaced with "FAQ" per feedback -->
+    <h2 style="font-size:clamp(1.6rem,3vw,2.2rem); margin-top:16px;">FAQ</h2>
+    <div class="faq">
+      <details open>
+        <summary>Is this an official Argonne or GREET release? <span class="plus">+</span></summary>
+        <p>No. GREETtoBW is an independent research pipeline built on top of the publicly distributed
+          GREET workbooks. It is not affiliated with or endorsed by Argonne National Laboratory.</p>
+      </details>
+      <details>
+        <summary>Do I need Excel to use the output? <span class="plus">+</span></summary>
+        <p>No. The dependency-tracing stage needs Excel once, to walk the workbook's formulas. Everything
+          downstream, building and using the EcoSpold datasets, runs without it.</p>
+      </details>
+      <!-- "Which chemistries and pathways are covered?" moved out of the FAQ to right after "What you get" -->
+      <details>
+        <summary>Can I trust a number without re-deriving it myself? <span class="plus">+</span></summary>
+        <p>Every dataset carries the GREET anchor cell it was traced from. You can always walk back to the
+          source formula in the workbook rather than take the output on faith.</p>
+      </details>
+      <!-- previously answered by linking github.com/GREETtoBW — repo isn't linked publicly yet -->
+      <details>
+        <summary>Can I get the code? <span class="plus">+</span></summary>
+        <p>The repository isn't public yet. Datasets built from the pipeline are shared on request while
+          coverage is still growing, ask above.</p>
+      </details>
+      <details>
+        <summary>How do I get in touch? <span class="plus">+</span></summary>
+        <p>Use the form above, or write directly to <a href="mailto:fzhao@purdue.edu" style="color:var(--brass-deep);">fzhao@purdue.edu</a>.</p>
+      </details>
+    </div>
+  </section>
+
+  <section id="why" class="wrap">
+    <span class="eyebrow">Why this exists</span>
+    <!-- old headline + card 02 read as claiming Argonne has no interoperability path, which isn't true
+         (they're actively building PyGREET and openLCA interoperability) — reframed as one additional
+         route from the publicly distributed Excel workbook, not a knock on their own work -->
+    <h2 style="font-size:clamp(1.6rem,3vw,2.2rem); margin-top:16px; max-width:30ch;">GREETtoBW is a path from the workbook into LCA software.</h2>
+    <div class="pain-grid">
+      <div class="pain-card">
+        <span class="num">01</span>
+        <h3>Formulas, not a database</h3>
+        <p>Every value in the public GREET workbook is a live Excel formula chained across dozens of
+          sheets, and there's no exported database, only the spreadsheet itself.</p>
+      </div>
+      <div class="pain-card">
+        <span class="num">02</span>
+        <h3>A bridge from Excel</h3>
+        <p>Brightway reads EcoSpold or ecoinvent-style exchange data. GREETtoBW builds that
+          bridge from the Excel workbook.</p>
+      </div>
+      <div class="pain-card">
+        <span class="num">03</span>
+        <h3>Provenance gets lost by hand</h3>
+        <p>Manual transcription drops the link back to the source cell and the scenario switch behind
+          it, so a reviewer can't check a number against the workbook it came from.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- "How it works" pipeline section commented out entirely per feedback (not wanted)
+  <section id="how" class="wrap">
+    <span class="eyebrow">Inside the pipeline</span>
+    <h2 style="font-size:clamp(1.6rem,3vw,2.2rem); margin-top:16px; max-width:28ch;">Two stages: trace the formulas, then build the graph.</h2>
+
+    <div style="margin-top:20px;">
+      <div class="stage">
+        <div class="stage-no">01</div>
+        <div>
+          <h3>Dependency tracing</h3>
+          <p>Starting from every value GREET reports, the tracer walks backward through Excel's formula
+            graph &mdash; through <span class="mono">SUM</span>s, nested <span class="mono">IF</span>s,
+            blend tables, and cross-sheet references &mdash; until it hits a root input. Each traced value
+            is written out as a CSV keyed to its anchor cell, not its label, because labels drift and cells don't.</p>
+          <div class="tag-row">
+            <span class="tag">formula walk</span>
+            <span class="tag">anchor = sheet + row + col</span>
+            <span class="tag">scenario-aware</span>
+          </div>
+        </div>
+      </div>
+      <div class="stage">
+        <div class="stage-no">02</div>
+        <div>
+          <h3>EcoSpold construction</h3>
+          <p>The builder reads those trace files &mdash; no Excel required from here on &mdash; and resolves
+            them into linked technosphere and biosphere exchanges. Lumped "combustion emissions" leaves get
+            decomposed back to their fuel sources; transport &amp; distribution legs get unbundled by mode;
+            every dataset keeps its anchor cell in its metadata for audit.</p>
+          <div class="tag-row">
+            <span class="tag">.spold XML</span>
+            <span class="tag">combustion by fuel</span>
+            <span class="tag">transport by mode</span>
+            <span class="tag">import-ready bundles</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  -->
+
+  <section id="output" class="wrap">
+    <span class="eyebrow">What you get</span>
+    <!-- old headline ("A dataset you can open, not a report you have to trust.") replaced per feedback -->
+    <h2 style="font-size:clamp(1.6rem,3vw,2.2rem); margin-top:16px; max-width:26ch;">Ready to import, built to be checked.</h2>
+    <div class="output-grid">
+      <ul class="output-list">
+        <li><span class="mark">&rarr;</span><div><h4>EcoSpold2 import bundles</h4><p>Self-contained <span class="mono">.spold</span> datasets that drop straight into a Brightway
+          <span class="mono">bw2io</span> import.</p></div></li>
+        <li><span class="mark">&rarr;</span><div><h4>Cell-level provenance</h4><p>Every exchange carries the GREET anchor it was traced from, so a reviewer can jump back to
+          the exact row and column that produced a number.</p></div></li>
+        <li><span class="mark">&rarr;</span><div><h4>Decomposed combustion &amp; transport</h4><p>Fuel-source and transport-mode splits are unbundled from GREET's lumped totals, not
+          approximated after the fact.</p></div></li>
+        <li><span class="mark">&rarr;</span><div><h4>Scenario coverage</h4><p>Built from GREET's own dropdown scenarios, so a chemistry or pathway switch in the workbook
+          is reflected in the dataset it produces.</p></div></li>
+      </ul>
+      <div class="anchor-card">
+        <div class="file">// example anchor, from a traced value</div>
+        <div><span class="k">sheet</span>&nbsp; <span class="path">Li_Chemicals</span></div>
+        <div><span class="k">anchor</span> <span class="path">r30_c11</span></div>
+        <div><span class="k">metric</span> <span class="path">energy, MJ/kg</span></div>
+        <div><span class="k">basis</span>&nbsp; <span class="path">Li2CO3, Chile brine</span></div>
+        <div><span class="k">scenario</span> <span class="path">baseline</span></div>
+        <div style="margin-top:10px; color:var(--ink-soft);">&rarr; resolved technosphere exchange, EcoSpold2</div>
+      </div>
+    </div>
+    <!-- coverage note ("Which chemistries and pathways are covered?") removed entirely per feedback -->
+  </section>
+
+  <section id="learn" class="wrap">
+    <span class="eyebrow">New to the formats?</span>
+    <!-- "Two things worth knowing before you dig in." read as patronizing — replaced -->
+    <h2 style="font-size:clamp(1.6rem,3vw,2.2rem); margin-top:16px; max-width:24ch;">GREET, EcoSpold, and Brightway, in short.</h2>
+    <div class="learn-grid">
+      <!-- was linking to github.com/GREETtoBW — repo isn't linked publicly yet; points to the official
+           Argonne GREET site instead -->
+      <a class="learn-card" href="https://greet.anl.gov/" target="_blank" rel="noopener">
+        <span class="eyebrow">GREET</span>
+        <h3>Argonne's GREET model</h3>
+        <p>The Department of Energy's life-cycle model for transportation fuels, vehicles, and materials,
+          the field's reference dataset, distributed as a pair of Excel workbooks.</p>
+        <span class="go">greet.anl.gov &rarr;</span>
+      </a>
+      <!-- no approved link target for this card yet (was pointing at the git repo) — kept as a plain card -->
+      <div class="learn-card" style="cursor:default;">
+        <span class="eyebrow">EcoSpold2 + Brightway</span>
+        <h3>Where the data lands</h3>
+        <p>EcoSpold2 is the XML exchange format LCA tools trade inventory data in; Brightway is the
+          Python framework that imports it and runs the impact calculations.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ section relocated to right after the hero — see above -->
+
+  <!-- interest form relocated to right after the hero, before FAQ — see above -->
+
+</main>
+
+<footer class="wrap">
+  <div class="foot-grid">
+    <div class="foot-links">
+      <a href="#faq">FAQ</a>
+      <a href="#why">Why</a>
+      <!-- "How it works" footer link commented out with the section it pointed to -->
+      <a href="#output">What you get</a>
+      <!-- GitHub footer link commented out: repo isn't linked publicly yet -->
+      <a href="#interest">Request access</a>
+    </div>
+    <div class="foot-meta">
+      <!-- tagline sentence removed from footer per feedback -->
+      Contact <a href="mailto:fzhao@purdue.edu">fzhao@purdue.edu</a> &middot; Supported by ARPA-E CIRCULAR
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var form = document.getElementById('requestForm');
+  var status = document.getElementById('formStatus');
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var name = document.getElementById('fname').value.trim();
+    var email = document.getElementById('femail').value.trim();
+    var org = document.getElementById('forg').value.trim();
+    var interest = document.getElementById('finterest').value;
+    var notes = document.getElementById('fnotes').value.trim();
+
+    var subject = 'GREETtoBW interest: ' + org;
+    var bodyLines = [
+      'Name: ' + name,
+      'Email: ' + email,
+      'Organization: ' + org,
+      'Interested in: ' + interest,
+      '',
+      'Notes:',
+      notes || '(none)'
+    ];
+    var mailto = 'mailto:fzhao@purdue.edu'
+      + '?subject=' + encodeURIComponent(subject)
+      + '&body=' + encodeURIComponent(bodyLines.join('\n'));
+
+    window.location.href = mailto;
+    status.textContent = 'Opening your email client to send this to fzhao@purdue.edu…';
+  });
+})();
+</script>
+
+<script>
+(function(){
+  var canvas = document.getElementById('loomCanvas');
+  if(!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var dpr = Math.min(window.devicePixelRatio || 1, 2);
+  var W, H, cols = 7, rows = 7, cellPts = [], edges = [];
+
+  function isDark(){
+    var t = document.documentElement.getAttribute('data-theme');
+    if(t === 'dark') return true;
+    if(t === 'light') return false;
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  }
+
+  function resize(){
+    var rect = canvas.getBoundingClientRect();
+    W = rect.width; H = rect.height;
+    canvas.width = W * dpr; canvas.height = H * dpr;
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    buildGrid();
+  }
+
+  function buildGrid(){
+    cellPts = [];
+    var padX = W*0.10, padY = H*0.10;
+    var gw = (W - padX*2), gh = (H - padY*2);
+    for(var r=0;r<rows;r++){
+      for(var c=0;c<cols;c++){
+        cellPts.push({
+          x: padX + (c/(cols-1))*gw,
+          y: padY + (r/(rows-1))*gh,
+          gx: padX + (c/(cols-1))*gw,
+          gy: padY + (r/(rows-1))*gh,
+          driftX: (Math.random()-0.5)*gw*0.16,
+          driftY: (Math.random()-0.5)*gh*0.16,
+          phase: Math.random()*Math.PI*2
+        });
+      }
+    }
+    edges = [];
+    for(var i=0;i<cellPts.length;i++){
+      var k = 1 + Math.floor(Math.random()*2);
+      for(var j=0;j<k;j++){
+        var target = Math.floor(Math.random()*cellPts.length);
+        if(target !== i) edges.push([i, target]);
+      }
+    }
+  }
+
+  function draw(t){
+    var dark = isDark();
+    var lineCol = dark ? 'rgba(91,140,255,0.40)' : 'rgba(11,79,219,0.32)';
+    var nodeCol = dark ? '#84A9FF' : '#0A3FAF';
+    var nodeDim = dark ? 'rgba(237,240,243,0.35)' : 'rgba(18,22,28,0.28)';
+    var gridCol = dark ? 'rgba(154,165,177,0.18)' : 'rgba(83,94,107,0.16)';
+
+    ctx.clearRect(0,0,W,H);
+
+    var morph = reduce ? 0.6 : (Math.sin(t*0.00035)+1)/2;
+
+    var pos = cellPts.map(function(p){
+      return {
+        x: p.gx + p.driftX * morph,
+        y: p.gy + p.driftY * morph
+      };
+    });
+
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = gridCol;
+    for(var r=0;r<rows;r++){
+      ctx.beginPath();
+      for(var c=0;c<cols;c++){
+        var p = pos[r*cols+c];
+        if(c===0) ctx.moveTo(p.x,p.y); else ctx.lineTo(p.x,p.y);
+      }
+      ctx.stroke();
+    }
+    for(var c=0;c<cols;c++){
+      ctx.beginPath();
+      for(var r=0;r<rows;r++){
+        var p = pos[r*cols+c];
+        if(r===0) ctx.moveTo(p.x,p.y); else ctx.lineTo(p.x,p.y);
+      }
+      ctx.stroke();
+    }
+
+    ctx.strokeStyle = lineCol;
+    ctx.lineWidth = 1.1;
+    edges.forEach(function(e){
+      var a = pos[e[0]], b = pos[e[1]];
+      ctx.globalAlpha = 0.25 + morph*0.55;
+      ctx.beginPath();
+      ctx.moveTo(a.x,a.y);
+      ctx.lineTo(b.x,b.y);
+      ctx.stroke();
+    });
+    ctx.globalAlpha = 1;
+
+    pos.forEach(function(p,i){
+      var r = 1.6 + morph*1.4;
+      ctx.beginPath();
+      ctx.fillStyle = morph > 0.5 ? nodeCol : nodeDim;
+      ctx.arc(p.x, p.y, r, 0, Math.PI*2);
+      ctx.fill();
+    });
+  }
+
+  var raf;
+  function loop(t){
+    draw(t);
+    if(!reduce) raf = requestAnimationFrame(loop);
+  }
+  resize();
+  window.addEventListener('resize', resize);
+  if(reduce){ draw(4000); } else { raf = requestAnimationFrame(loop); }
+})();
+</script>
