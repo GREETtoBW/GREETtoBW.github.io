@@ -322,7 +322,7 @@
              hundred sheets) — replaced per explicit wording -->
         <p class="lede">GREET's life-cycle data for fuels, vehicles, and materials lives in two interlinked
           Excel workbooks. GREETtoBW traces every formula back to its source and rebuilds it as linked
-          EcoSpold2 datasets, so it opens directly in Brightway, with each number still
+          XML datasets, so it opens directly in Brightway, with each number still
           traceable to the cell it came from.</p>
         <div class="hero-ctas">
           <a class="btn btn-primary" href="#interest">Request pipeline access</a>
@@ -408,7 +408,7 @@
       <div class="pain-card">
         <span class="num">02</span>
         <h3>A bridge from Excel</h3>
-        <p>Brightway reads EcoSpold or ecoinvent-style exchange data. GREETtoBW builds that
+        <p>Brightway reads XML format data (ecoinvent-style, EcoSpold2). GREETtoBW builds that
           bridge from the Excel workbook.</p>
       </div>
       <div class="pain-card">
@@ -467,7 +467,7 @@
     <h2 style="font-size:clamp(1.6rem,3vw,2.2rem); margin-top:16px; max-width:26ch;">Ready to import, built to be checked.</h2>
     <div class="output-grid">
       <ul class="output-list">
-        <li><span class="mark">&rarr;</span><div><h4>EcoSpold2 import bundles</h4><p>Self-contained <span class="mono">.spold</span> datasets that drop straight into a Brightway
+        <li><span class="mark">&rarr;</span><div><h4>XML import bundles</h4><p>Self-contained <span class="mono">.spold</span> datasets that drop straight into a Brightway
           <span class="mono">bw2io</span> import.</p></div></li>
         <li><span class="mark">&rarr;</span><div><h4>Cell-level provenance</h4><p>Every exchange carries the GREET anchor it was traced from, so a reviewer can jump back to
           the exact row and column that produced a number.</p></div></li>
@@ -483,7 +483,7 @@
         <div><span class="k">metric</span> <span class="path">energy, MJ/kg</span></div>
         <div><span class="k">basis</span>&nbsp; <span class="path">Li2CO3, Chile brine</span></div>
         <div><span class="k">scenario</span> <span class="path">baseline</span></div>
-        <div style="margin-top:10px; color:var(--ink-soft);">&rarr; resolved technosphere exchange, EcoSpold2</div>
+        <div style="margin-top:10px; color:var(--ink-soft);">&rarr; resolved technosphere exchange</div>
       </div>
     </div>
     <!-- coverage note ("Which chemistries and pathways are covered?") removed entirely per feedback -->
@@ -529,7 +529,7 @@
       <details>
         <summary>Do I need Excel to use the output? <span class="plus">+</span></summary>
         <p>No. The dependency-tracing stage needs Excel once, to walk the workbook's formulas. Everything
-          downstream, building and using the EcoSpold datasets, runs without it.</p>
+          downstream, building and using the XML .spold format datasets, runs without it.</p>
       </details>
       <!-- "Which chemistries and pathways are covered?" moved out of the FAQ to right after "What you get" -->
       <details>
