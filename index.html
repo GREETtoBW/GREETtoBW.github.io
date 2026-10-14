@@ -87,11 +87,15 @@
   }
   .mono{font-family:"IBM Plex Mono", ui-monospace, monospace;}
 
-  /* widened from a boxed 1120px container to a near-full-bleed one, per feedback (closer to litecab) */
-  .wrap{max-width:1600px; margin:0 auto; padding:0 5vw;}
+  /* widened from a boxed 1120px container to a near-full-bleed one, per feedback (closer to litecab).
+     This was "padding:0 5vw" (shorthand) — as a class selector it beat the plain "section{padding:96px 0}"
+     element rule regardless of source order, silently zeroing every wrap section's vertical padding ever
+     since (the same class of bug as the earlier hero fix). Now longhand, horizontal-only, so it no longer
+     competes with section's vertical padding at all. */
+  .wrap{max-width:1600px; margin:0 auto; padding-left:5vw; padding-right:5vw;}
   section{padding:96px 0;}
   section + section{border-top:1px solid var(--rule);}
-  @media (max-width:640px){ section{padding:64px 0;} .wrap{padding:0 20px;} }
+  @media (max-width:640px){ section{padding:64px 0;} .wrap{padding-left:20px; padding-right:20px;} }
 
   /* ---------- nav ---------- */
   /* header moved to a solid dark blue bar (was a translucent light strip) — kept the same fixed navy in
@@ -290,7 +294,7 @@
       <!-- "How it works" nav link commented out with the section it pointed to -->
       <a class="hide-narrow" href="#output">What you get</a>
       <a class="hide-narrow" href="#learn">Learn</a>
-      <a href="#interest" class="btn btn-primary">Request access</a>
+      <a href="#interest" class="btn btn-primary">Request pipeline access</a>
     </nav>
   </div>
 </header>
@@ -307,7 +311,7 @@
           EcoSpold2 datasets, so it opens directly in Brightway, with each number still
           traceable to the cell it came from.</p>
         <div class="hero-ctas">
-          <a class="btn btn-primary" href="#interest">Request access</a>
+          <a class="btn btn-primary" href="#interest">Request pipeline access</a>
           <!-- "View the code on GitHub" commented out: repo isn't linked publicly yet, per request -->
         </div>
         <!-- earlier attempt moved "Request access" up next to the eyebrow — user clarified they meant right below the intro (eyebrow + h1 + lede), so it's back here -->
@@ -324,11 +328,12 @@
     <div class="wrap interest-grid">
       <div class="interest-intro">
         <span class="eyebrow">For your lab or group</span>
-        <!-- "Get the datasets, or shape what's built next." changed to lead with conversion-code access per feedback -->
-        <h2 style="font-size:clamp(1.6rem,3vw,2.2rem); margin-top:16px;">Get access to conversion codes, or shape what's built next.</h2>
+        <!-- Argonne isn't comfortable with us distributing datasets — reworded so nothing on this page
+             offers datasets, only the pipeline/code itself -->
+        <h2 style="font-size:clamp(1.6rem,3vw,2.2rem); margin-top:16px;">Get the code, or shape what's built next.</h2>
         <p>Coverage is being built out sheet by sheet. Tell us which chemistries, pathways, or GREET
-          sheets matter to your work and we'll follow up, whether that's early access to built
-          datasets, a walkthrough of the pipeline, or a conversation about what to trace next.</p>
+          sheets matter to your work and we'll follow up, whether that's access to the conversion
+          pipeline, a walkthrough of how it works, or a conversation about what to trace next.</p>
         <div class="note">Submitting opens a pre-filled email to <span class="mono">fzhao@purdue.edu</span>.
           Nothing is sent automatically, and no data is stored on this page.</div>
       </div>
@@ -349,9 +354,11 @@
         </div>
         <div class="field">
           <label for="finterest">What are you interested in?</label>
+          <!-- dropped the two dataset-adjacent options (built-dataset access, specific chemistry/sheet) —
+               Argonne isn't comfortable with us distributing datasets, so this only offers pipeline/code
+               access, not data -->
           <select id="finterest" name="interest">
-            <option>Early access to built EcoSpold datasets</option>
-            <option>A specific chemistry or GREET sheet</option>
+            <option>Access to the conversion pipeline</option>
             <option>A technical walkthrough of the pipeline</option>
             <option>Collaborating on the codebase</option>
             <option>Just exploring</option>
@@ -541,7 +548,7 @@
       <!-- "How it works" footer link commented out with the section it pointed to -->
       <a href="#output">What you get</a>
       <!-- GitHub footer link commented out: repo isn't linked publicly yet -->
-      <a href="#interest">Request access</a>
+      <a href="#interest">Request pipeline access</a>
     </div>
     <div class="foot-meta">
       <!-- tagline sentence removed from footer per feedback -->
