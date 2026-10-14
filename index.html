@@ -93,9 +93,11 @@
      since (the same class of bug as the earlier hero fix). Now longhand, horizontal-only, so it no longer
      competes with section's vertical padding at all. */
   .wrap{max-width:1600px; margin:0 auto; padding-left:5vw; padding-right:5vw;}
-  section{padding:96px 0;}
+  /* was 96px — once the vertical-padding bug above was fixed, that read as too much gap before each
+     next heading, so dialed back down */
+  section{padding:56px 0;}
   section + section{border-top:1px solid var(--rule);}
-  @media (max-width:640px){ section{padding:64px 0;} .wrap{padding-left:20px; padding-right:20px;} }
+  @media (max-width:640px){ section{padding:40px 0;} .wrap{padding-left:20px; padding-right:20px;} }
 
   /* ---------- nav ---------- */
   /* header moved to a solid dark blue bar (was a translucent light strip) — kept the same fixed navy in
@@ -380,41 +382,6 @@
     </div>
   </section>
 
-  <!-- FAQ moved here, right after the hero, per feedback -->
-  <section id="faq" class="wrap">
-    <span class="eyebrow">Common questions</span>
-    <!-- "Before you ask" replaced with "FAQ" per feedback -->
-    <h2 style="font-size:clamp(1.6rem,3vw,2.2rem); margin-top:16px;">FAQ</h2>
-    <div class="faq">
-      <details open>
-        <summary>Is this an official Argonne or GREET release? <span class="plus">+</span></summary>
-        <p>No. GREETtoBW is an independent research pipeline built on top of the publicly distributed
-          GREET workbooks. It is not affiliated with or endorsed by Argonne National Laboratory.</p>
-      </details>
-      <details>
-        <summary>Do I need Excel to use the output? <span class="plus">+</span></summary>
-        <p>No. The dependency-tracing stage needs Excel once, to walk the workbook's formulas. Everything
-          downstream, building and using the EcoSpold datasets, runs without it.</p>
-      </details>
-      <!-- "Which chemistries and pathways are covered?" moved out of the FAQ to right after "What you get" -->
-      <details>
-        <summary>Can I trust a number without re-deriving it myself? <span class="plus">+</span></summary>
-        <p>Every dataset carries the GREET anchor cell it was traced from. You can always walk back to the
-          source formula in the workbook rather than take the output on faith.</p>
-      </details>
-      <!-- previously answered by linking github.com/GREETtoBW — repo isn't linked publicly yet -->
-      <details>
-        <summary>Can I get the code? <span class="plus">+</span></summary>
-        <p>The repository isn't public yet. Datasets built from the pipeline are shared on request while
-          coverage is still growing, ask above.</p>
-      </details>
-      <details>
-        <summary>How do I get in touch? <span class="plus">+</span></summary>
-        <p>Use the form above, or write directly to <a href="mailto:fzhao@purdue.edu" style="color:var(--brass-deep);">fzhao@purdue.edu</a>.</p>
-      </details>
-    </div>
-  </section>
-
   <section id="why" class="wrap">
     <span class="eyebrow">Why this exists</span>
     <!-- old headline + card 02 read as claiming Argonne has no interoperability path, which isn't true
@@ -536,9 +503,42 @@
     </div>
   </section>
 
-  <!-- FAQ section relocated to right after the hero — see above -->
+  <!-- interest form relocated to right after the hero — see above -->
 
-  <!-- interest form relocated to right after the hero, before FAQ — see above -->
+  <!-- FAQ moved to the end of the page, per feedback -->
+  <section id="faq" class="wrap">
+    <span class="eyebrow">Common questions</span>
+    <!-- "Before you ask" replaced with "FAQ" per feedback -->
+    <h2 style="font-size:clamp(1.6rem,3vw,2.2rem); margin-top:16px;">FAQ</h2>
+    <div class="faq">
+      <details open>
+        <summary>Is this an official Argonne or GREET release? <span class="plus">+</span></summary>
+        <p>No. GREETtoBW is an independent research pipeline built on top of the publicly distributed
+          GREET workbooks. It is not affiliated with or endorsed by Argonne National Laboratory.</p>
+      </details>
+      <details>
+        <summary>Do I need Excel to use the output? <span class="plus">+</span></summary>
+        <p>No. The dependency-tracing stage needs Excel once, to walk the workbook's formulas. Everything
+          downstream, building and using the EcoSpold datasets, runs without it.</p>
+      </details>
+      <!-- "Which chemistries and pathways are covered?" moved out of the FAQ to right after "What you get" -->
+      <details>
+        <summary>Can I trust a number without re-deriving it myself? <span class="plus">+</span></summary>
+        <p>Every dataset carries the GREET anchor cell it was traced from. You can always walk back to the
+          source formula in the workbook rather than take the output on faith.</p>
+      </details>
+      <!-- previously answered by linking github.com/GREETtoBW — repo isn't linked publicly yet -->
+      <details>
+        <summary>Can I get the code? <span class="plus">+</span></summary>
+        <p>The repository isn't public yet. Datasets built from the pipeline are shared on request while
+          coverage is still growing, ask above.</p>
+      </details>
+      <details>
+        <summary>How do I get in touch? <span class="plus">+</span></summary>
+        <p>Use the form above, or write directly to <a href="mailto:fzhao@purdue.edu" style="color:var(--brass-deep);">fzhao@purdue.edu</a>.</p>
+      </details>
+    </div>
+  </section>
 
 </main>
 
