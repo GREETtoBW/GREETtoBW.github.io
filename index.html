@@ -1,4 +1,10 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>GREET to BW</title>
+<meta name="description" content="GREETtoBW: an open pipeline from GREET's Excel formulas to Brightway-ready EcoSpold2 data.">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
   /* cobalt+copper swapped for a straight family of blues, per feedback — brass = deep primary blue,
@@ -286,16 +292,20 @@
   .foot-meta{font-size:0.82rem; color:var(--ink-soft); max-width:36ch;}
   .foot-meta a{color:var(--brass-deep); text-decoration:none;}
 </style>
+</head>
+<body>
 
 <header class="site">
   <div class="nav">
     <a class="brand" href="#top">GREET <span class="arrow">&rarr;</span> BW</a>
+    <!-- reordered to match actual page order now that FAQ sits at the end (was: FAQ, Why, What you
+         get, Learn — FAQ listed first while it scrolled to the bottom) -->
     <nav class="links">
-      <a class="hide-narrow" href="#faq">FAQ</a>
       <a class="hide-narrow" href="#why">Why</a>
       <!-- "How it works" nav link commented out with the section it pointed to -->
       <a class="hide-narrow" href="#output">What you get</a>
       <a class="hide-narrow" href="#learn">Learn</a>
+      <a class="hide-narrow" href="#faq">FAQ</a>
       <a href="#interest" class="btn btn-primary">Request pipeline access</a>
     </nav>
   </div>
@@ -546,11 +556,13 @@
 
 <footer class="wrap">
   <div class="foot-grid">
+    <!-- reordered to match actual page order, same as nav above -->
     <div class="foot-links">
-      <a href="#faq">FAQ</a>
       <a href="#why">Why</a>
       <!-- "How it works" footer link commented out with the section it pointed to -->
       <a href="#output">What you get</a>
+      <a href="#learn">Learn</a>
+      <a href="#faq">FAQ</a>
       <!-- GitHub footer link commented out: repo isn't linked publicly yet -->
       <a href="#interest">Request pipeline access</a>
     </div>
@@ -712,3 +724,6 @@
   if(reduce){ draw(4000); } else { raf = requestAnimationFrame(loop); }
 })();
 </script>
+
+</body>
+</html>
